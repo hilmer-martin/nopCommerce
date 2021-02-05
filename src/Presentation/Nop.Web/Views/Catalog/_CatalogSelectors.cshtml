@@ -1,5 +1,13 @@
 ﻿@model CatalogProductsModel
 
+@if (Model.Products.Count <= 0 &&
+     !Model.PriceRangeFilter.Enabled &&
+     !Model.SpecificationFilter.Enabled &&
+     !Model.ManufacturerFilter.Enabled)
+{
+    return;
+}
+
 <div class="product-selectors">
     @*view mode*@
     @if (Model.AllowProductViewModeChanging)

@@ -1833,7 +1833,8 @@ namespace Nop.Web.Factories
         {
             var model = new PriceRangeFilterModel();
 
-            if (!availablePriceRange.To.HasValue || availablePriceRange.To == 0)
+            if (!availablePriceRange.To.HasValue || availablePriceRange.To == 0
+                || availablePriceRange.To == availablePriceRange.From)
             {
                 // filter by price isn't available
                 return model;
