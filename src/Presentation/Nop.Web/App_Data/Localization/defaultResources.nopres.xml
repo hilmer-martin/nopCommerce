@@ -4341,12 +4341,6 @@
   <LocaleResource Name="Admin.Configuration.AppSettings.Common.DisplayFullErrorStack.Hint">
     <Value>Enable this setting to display the full error in production environment. It's ignored (always enabled) in development environment.</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.Common.CrawlerOnlyUserAgentStringsPath">
-    <Value>Crawler user agent strings path</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.Common.CrawlerOnlyUserAgentStringsPath.Hint">
-    <Value>Specify a path to the file with crawler only user agent strings. Leave empty to always use full version of user agent strings file.</Value>
-  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.AppSettings.Common.MiniProfilerEnabled">
     <Value>Enable MiniProfiler</Value>
   </LocaleResource>

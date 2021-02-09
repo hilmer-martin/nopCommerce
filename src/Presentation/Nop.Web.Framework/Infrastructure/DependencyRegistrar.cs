@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Nop.Core;
 using Nop.Core.Caching;
 using Nop.Core.Configuration;
-using Nop.Core.Domain.Stores;
 using Nop.Core.Events;
 using Nop.Core.Infrastructure;
 using Nop.Core.Infrastructure.DependencyManagement;
@@ -81,7 +80,7 @@ namespace Nop.Web.Framework.Infrastructure
 
             //data layer
             services.AddTransient<IDataProviderManager, DataProviderManager>();
-            services.AddTransient(context => context.GetRequiredService<IDataProviderManager>().DataProvider);
+            services.AddTransient(serviceProvider => serviceProvider.GetRequiredService<IDataProviderManager>().DataProvider);
 
             //repositories
             services.AddScoped(typeof(IRepository<>), typeof(EntityRepository<>));
@@ -238,36 +237,16 @@ namespace Nop.Web.Framework.Infrastructure
             //register all settings
             var settings = typeFinder.FindClassesOfType(typeof(ISettings), false).ToList();
             foreach (var setting in settings)
-                services.AddScoped(setting, context =>
+            {
+                services.AddScoped(setting, serviceProvider =>
                 {
-                    var settingService = context.GetRequiredService<ISettingService>();
-                    var storeContext = context.GetRequiredService<IStoreContext>();
-                    Store store;
-                    try
-                    {
-                        store = storeContext.GetCurrentStoreAsync().Result;
-                    }
-                    catch
-                    {
-                        if (!DataSettingsManager.IsDatabaseInstalled())
-                            store = null;
-                        else
-                            throw;
-                    }
-                    var currentStoreId = store?.Id ?? 0;
-                    try
-                    {
-                        return settingService.LoadSettingAsync(setting, currentStoreId).Result;
-                    }
-                    catch
-                    {
-                        if (DataSettingsManager.IsDatabaseInstalled())
-                            throw;
-                    }
+                    var storeId = DataSettingsManager.IsDatabaseInstalled()
+                        ? serviceProvider.GetRequiredService<IStoreContext>().GetCurrentStoreAsync().Result?.Id ?? 0
+                        : 0;
 
-                    return default;
+                    return serviceProvider.GetRequiredService<ISettingService>().LoadSettingAsync(setting, storeId).Result;
                 });
-                
+            }
 
             //picture service
             if (appSettings.AzureBlobConfig.Enabled)
@@ -279,14 +258,11 @@ namespace Nop.Web.Framework.Infrastructure
             services.AddTransient<DatabaseRoxyFilemanService>();
             services.AddTransient<FileRoxyFilemanService>();
 
-            services.AddScoped<IRoxyFilemanService>(context =>
+            services.AddScoped<IRoxyFilemanService>(serviceProvider =>
             {
-                var pictureService = context.GetRequiredService<IPictureService>();
-
-                return pictureService?.IsStoreInDbAsync().Result ?? false
-                    ? context.GetService<DatabaseRoxyFilemanService>()
-                    : context.GetService<FileRoxyFilemanService>();
-
+                return serviceProvider.GetRequiredService<IPictureService>().IsStoreInDbAsync().Result
+                    ? serviceProvider.GetRequiredService<DatabaseRoxyFilemanService>()
+                    : serviceProvider.GetRequiredService<FileRoxyFilemanService>();
             });
 
             //installation service
