@@ -176,10 +176,12 @@
 
     function toggleProductsByTagAutomaticallyCalculatePriceRange() {
         if ($('#@Html.IdFor(model => model.ProductsByTagPriceRangeFiltering)').is(':checked')) {
-            toggleProductsByTagPriceRange();
+            if (!$('#@Html.IdFor(model => model.ProductsByTagAutomaticallyCalculatePriceRange)').is(':checked')) {
+                $('#pnlProductsByTagPriceRange').show();
+            }
             $('#pnlProductsByTagAutomaticallyCalculatePriceRange').show();
         } else {
-            toggleProductsByTagPriceRange();
+            $('#pnlProductsByTagPriceRange').hide();
             $('#pnlProductsByTagAutomaticallyCalculatePriceRange').hide();
         }
     }

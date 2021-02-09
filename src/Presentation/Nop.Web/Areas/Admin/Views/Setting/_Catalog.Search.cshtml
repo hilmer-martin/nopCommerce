@@ -181,10 +181,12 @@
 
     function toggleSearchPageAutomaticallyCalculatePriceRange() {
         if ($('#@Html.IdFor(model => model.SearchPagePriceRangeFiltering)').is(':checked')) {
-            toggleSearchPagePriceRange();
+            if (!$('#@Html.IdFor(model => model.ProductsByTagAutomaticallyCalculatePriceRange)').is(':checked')) {
+                $('#pnlSearchPagePriceRange').show();
+            }
             $('#pnlSearchPageAutomaticallyCalculatePriceRange').show();
         } else {
-            toggleSearchPagePriceRange();
+            $('#pnlSearchPagePriceRange').hide();
             $('#pnlSearchPageAutomaticallyCalculatePriceRange').hide();
         }
     }

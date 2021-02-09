@@ -134,10 +134,12 @@
 
     function toggleAutomaticallyCalculatePriceRange() {
         if ($('#@Html.IdFor(model => model.PriceRangeFiltering)').is(':checked')) {
-            togglePriceRange();
+            if (!$('#@Html.IdFor(model => model.AutomaticallyCalculatePriceRange)').is(':checked')) {
+                $('#pnlPriceRange').show();
+            }
             $('#pnlAutomaticallyCalculatePriceRange').show();
         } else {
-            togglePriceRange();
+            $('#pnlPriceRange').hide();
             $('#pnlAutomaticallyCalculatePriceRange').hide();
         }
     }
